@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import sys
 import typing as t
-from collections import defaultdict
 
 
 def main():
@@ -18,11 +17,15 @@ def main():
 
     if action == "part1":
         distance, depth = position_part1(commands)
-        print(f"Distance: {distance:,d}; Depth: {depth:,d}; Product: {distance * depth:d}")
+        print(
+            f"Distance: {distance:,d}; Depth: {depth:,d}; Product: {distance * depth:d}"
+        )
 
     elif action == "part2":
         distance, depth = position_part2(commands)
-        print(f"Distance: {distance:,d}; Depth: {depth:,d}; Product: {distance * depth:d}")
+        print(
+            f"Distance: {distance:,d}; Depth: {depth:,d}; Product: {distance * depth:d}"
+        )
 
     else:
         return "Invalid action"
