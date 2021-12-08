@@ -4,8 +4,8 @@
 
 from __future__ import annotations
 
-import sys
 import pprint
+import sys
 from dataclasses import dataclass, field
 
 BOARD_SIZE = 5
@@ -68,10 +68,12 @@ class BingoBoard:
     def __str__(self):
         output = []
         for row in range(len(self.values)):
-            output.append(" ".join(
-                f"{val:02}{'*' if sel else ' '}"
-                for val, sel in zip(self.values[row], self.selected[row])
-            ))
+            output.append(
+                " ".join(
+                    f"{val:02}{'*' if sel else ' '}"
+                    for val, sel in zip(self.values[row], self.selected[row])
+                )
+            )
         return "\n".join(output)
 
     def __repr__(self):
