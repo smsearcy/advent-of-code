@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Template for Advent of Code solution in Python.
+"""Day 10:
 
 Usage: ./solution.py 1|2 FILE
 

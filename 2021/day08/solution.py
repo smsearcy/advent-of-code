@@ -7,8 +7,8 @@ Usage: ./solution.py 1|2 FILE
 
 from __future__ import annotations
 
-import sys
 import itertools
+import sys
 import typing as t
 from argparse import ArgumentParser
 from dataclasses import dataclass
@@ -46,10 +46,7 @@ def main():
 
 
 def part1(filename):
-    outputs = [
-        output
-        for _pattern, output in read_file(filename)
-    ]
+    outputs = [output for _pattern, output in read_file(filename)]
     print("Outputs:", outputs)
     count = 0
     for output in itertools.chain(*outputs):
@@ -129,7 +126,6 @@ def read_file(filename) -> t.Iterator[tuple[list[str], list[str]]]:
         for line in f:
             patterns, output = line.split(" | ")
             yield patterns.split(), output.split()
-
 
 
 if __name__ == "__main__":

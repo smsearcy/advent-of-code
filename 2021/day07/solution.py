@@ -10,9 +10,9 @@ from __future__ import annotations
 import sys
 import typing as t
 from argparse import ArgumentParser
-from operator import itemgetter
 from collections import Counter
 from dataclasses import dataclass
+from operator import itemgetter
 
 verbose = False
 
@@ -55,7 +55,9 @@ def part2(filename):
     print("Starting positions:", crab_positions)
     cost = {}
     for goal in range(min(crab_positions), max(crab_positions) + 1):
-        cost[goal] = sum(abs(goal - pos) * (abs(goal - pos) + 1) / 2  for pos in crab_positions)
+        cost[goal] = sum(
+            abs(goal - pos) * (abs(goal - pos) + 1) / 2 for pos in crab_positions
+        )
 
     if verbose:
         print("All costs:", cost)

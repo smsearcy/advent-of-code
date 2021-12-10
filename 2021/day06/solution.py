@@ -77,7 +77,7 @@ def part1(filename):
 
 
 def part2(filename):
-    fish_per_day = {0: 0, 1: 0, 2: 0, 3:0, 4:0, 5: 0, 6: 0, 7: 0, 8: 0}
+    fish_per_day = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0}
     for fish in read_file(filename):
         fish_per_day[fish] += 1
 
