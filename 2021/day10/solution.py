@@ -13,7 +13,6 @@ from argparse import ArgumentParser
 from collections import deque
 from dataclasses import dataclass
 
-
 verbose = False
 
 
@@ -23,12 +22,7 @@ MATCH = {
     "}": "{",
     ">": "<",
 }
-SCORES = {
-    ")": 3,
-    "]": 57,
-    "}": 1197,
-    ">": 25137,
-}
+
 
 def main():
     parser = ArgumentParser()
@@ -58,13 +52,19 @@ def part1(filename):
 
 
 def score_invalid(line):
+    scoring = {
+        ")": 3,
+        "]": 57,
+        "}": 1197,
+        ">": 25137,
+    }
     stack = deque()
     for character in line:
         if character in MATCH.keys():
             if stack.pop() != MATCH[character]:
                 if verbose:
                     print("INVALID:", line)
-                return SCORES[character]
+                return scoring[character]
         else:
             stack.append(character)
     if verbose:
@@ -73,7 +73,43 @@ def score_invalid(line):
 
 
 def part2(filename):
-    pass
+    scores = []
+    for line in read_file(filename):
+        if score := score_completion(line):
+            scores.append(score)
+    scores = sorted(scores)
+    if verbose:
+        print(scores)
+    print("Score:", scores[len(scores) // 2])
+
+
+def score_completion(line) -> int:
+    scoring = {
+        "(": 1,
+        "[": 2,
+        "{": 3,
+        "<": 4,
+    }
+    stack = deque()
+    for character in line:
+        if character in MATCH.keys():
+            if stack.pop() != MATCH[character]:
+                if verbose:
+                    print("INVALID:", line)
+                return 0
+        else:
+            stack.append(character)
+    score = 0
+    if verbose:
+        print(stack)
+    for _ in range(len(stack)):
+        sym = stack.pop()
+        score *= 5
+        score += scoring[sym]
+
+    if verbose:
+        print("Score:", score)
+    return score
 
 
 def read_file(filename) -> t.Iterator[str]:
