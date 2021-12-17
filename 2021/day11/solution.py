@@ -52,7 +52,7 @@ class Grid:
             raise IndexError(f"Not inside grid: {item}") from None
 
     def __iter__(self):
-        return (Point(x, y) for x in range(self._width) for y in range(self._height))
+        return (Point(x, y) for y in range(self._height) for x in range(self._width))
 
     def neighbors(self, point: Point, *, diagonal: bool = False) -> t.Iterator[Point]:
         """Yield the neighbors to a particular point."""
@@ -72,7 +72,10 @@ class Grid:
                     yield Point(point.x + delta_x, point.y + delta_y)
 
     def flashes(self) -> int:
-        return sum(1 for octopus in self._values if octopus.flashed) or 0
+        return sum(1 for octopus in self._values if octopus.flashed)
+
+    def all_flashed(self) -> bool:
+        return self.flashes() == len(self._values)
 
     def reset(self):
         for octopus in self._values:
@@ -90,9 +93,12 @@ class Octopus:
     flashed: bool = False
 
     def increase(self) -> bool:
-        if self.energy == 9:
-            self.flashed = True
+        if self.flashed:
+            # short-circuit so it doesn't flash twice
+            return False
         self.energy += 1
+        if self.energy > 9:
+            self.flashed = True
         return self.flashed
 
     def reset(self):
@@ -126,7 +132,7 @@ def main():
 
 
 def part1(filename):
-    """Score based on lowest points."""
+    """Count the number of flashes."""
     grid = read_file(filename)
     if verbose:
         print(grid)
@@ -154,43 +160,28 @@ def step(grid: Grid) -> int:
 
 def cascade(grid: Grid, point: Point):
     for neighbor in grid.neighbors(point, diagonal=True):
-        if grid[neighbor].flashed:
-            continue
         if grid[neighbor].increase():
             cascade(grid, neighbor)
 
 
 def part2(filename):
-    """Score based on size of basins."""
+    """When do they all flash?"""
     grid = read_file(filename)
     if verbose:
         print(grid)
+        print()
 
-    # Really, it's finding regions bounded by "9"s
-    # but since we have the low points I think I'll start there
-    low_points = []
-    for point in grid:
-        value = grid[point]
-        if value < min(grid[p] for p in grid.neighbors(point)):
-            low_points.append(point)
+    count = 1
+    while True:
+        for pt in grid:
+            if grid[pt].increase():
+                cascade(grid, pt)
+        if grid.all_flashed():
+            break
+        grid.reset()
+        count += 1
 
-    regions = []
-    for start in low_points:
-        region = set()
-        build_region(start, grid, region)
-        regions.append(region)
-
-    if verbose:
-        for region in regions:
-            print(f"Region ({len(region)}):", region)
-
-    largest_regions = sorted(regions, key=lambda obj: len(obj))[-3:]
-    if verbose:
-        print(largest_regions)
-    score = 1
-    for region in largest_regions:
-        score *= len(region)
-    print("Score:", score)
+    print("Turn:", count)
 
 
 def read_file(filename) -> Grid:
