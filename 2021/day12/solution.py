@@ -10,6 +10,7 @@ from __future__ import annotations
 import sys
 import typing as t
 from argparse import ArgumentParser
+from collections import defaultdict
 from dataclasses import dataclass
 from pprint import pprint
 
@@ -88,12 +89,32 @@ def find_path_part2(
         return [path]
     paths = []
     for room in caves[start]:
-        if room.islower() and room in set(path):
-            # skip small rooms we've already been in
+        if room.islower() and not can_visit2(room, path):
+            # skip small rooms if we've already been in one twice
             continue
-        paths.extend(find_path_part1(caves, room, path.copy()))
+        paths.extend(find_path_part2(caves, room, path.copy()))
 
     return paths
+
+
+def can_visit2(room: str, path: list[str]) -> bool:
+    """Can we visit a small room?"""
+    visit_count = defaultdict(int)
+    for rm in path:
+        if not rm.islower():
+            continue
+        visit_count[rm] += 1
+
+    if room not in visit_count:
+        answer = True
+    elif 2 not in visit_count.values():
+        answer = True
+    else:
+        answer = False
+
+    if verbose:
+        print(f"Checking {room}: {path} = {answer}")
+    return answer
 
 
 def read_file(filename) -> dict[str, set[str]]:
