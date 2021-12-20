@@ -11,7 +11,7 @@ import itertools
 import sys
 import typing as t
 from argparse import ArgumentParser
-from collections import Counter
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 
 verbose = False
@@ -56,7 +56,41 @@ def part1(filename):
 
 
 def part2(filename):
-    pass
+    template, rules = read_file(filename)
+    print("Starting template:", "".join(char for char in template))
+    print("# of rules:", len(rules))
+
+    new_rules = {
+        key: (f"{key[0]}{val}", f"{val}{key[1]}") for key, val in rules.items()
+    }
+    parts = defaultdict(int)
+    for pair in itertools.pairwise(template):
+        parts["".join(pair)] += 1
+    if verbose:
+        print(parts)
+    for _ in range(40):
+        for pair, count in [itm for itm in parts.items() if itm[1] > 0]:
+            parts[pair] -= count
+            for new_pair in new_rules[pair]:
+                parts[new_pair] += count
+
+    if verbose:
+        print(parts)
+
+    counts = Counter()
+    for pair, count in parts.items():
+        counts[pair[0]] += count
+        counts[pair[1]] += count
+    counts[template[0]] += 1  # first character will be doubled
+    counts[template[-1]] += 1  # last character will be doubled
+
+    if verbose:
+        print(counts)
+
+    results = counts.most_common()
+    print("Most common:", results[0])
+    print("Least common:", results[-1])
+    print("Final score:", results[0][1] // 2 - results[-1][1] // 2)
 
 
 def read_file(filename) -> tuple[list[str], dict[str, str]]:
