@@ -32,7 +32,6 @@ class Grid:
 
     @classmethod
     def from_rows(cls, rows: t.Iterable[t.Sequence]) -> Grid:
-        # trusting all rows are consistent length
         width = None
         height = 0
         values = []
