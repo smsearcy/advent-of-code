@@ -15,9 +15,9 @@ from datetime import datetime
 from argparse import ArgumentParser
 from collections import deque
 from dataclasses import dataclass, field
+from operator import attrgetter
 
 verbose = False
-best_score = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -131,6 +131,52 @@ def main():
 
 
 def part1(filename):
+    """Trying to incorporate some improvements suggested by a coworker."""
+    grid = read_file(filename)
+    if verbose:
+        print(grid)
+        print()
+
+    paths = deque((Path.start(P(0, 0)), ))
+    print(datetime.now())
+
+    count = 0
+    best_path = None
+    while best_path is None:
+        path = paths.popleft()
+
+        count += 1
+        if count % 10000 == 0:
+            if verbose:
+                print(f"{len(paths) + 1} ({path.score}); ", end="", flush=True)
+            else:
+                print(".", end="", flush=True)
+
+        for point in grid.neighbors(path.end):
+            if point in path.nodes:
+                continue
+            new_path = path.copy()
+            new_path.add(point, grid)
+            if new_path.end == P(grid.width - 1, grid.height - 1):
+                # found the end
+                best_path = new_path
+                break
+            paths.appendleft(new_path)
+
+        paths = deque(sorted(paths, key=attrgetter("score")))
+
+    print()
+    print(datetime.now())
+    print()
+    if verbose:
+        best_path.draw(grid)
+        print()
+    print("Best score:", best_path.score)
+
+
+def part1_brute_force(filename):
+    """My original approach, in case I want to try it parallel."""
+
     grid = read_file(filename)
     if verbose:
         print(grid)
