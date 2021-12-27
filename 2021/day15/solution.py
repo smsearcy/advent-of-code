@@ -75,26 +75,22 @@ class Grid:
 @dataclass
 class Path:
     nodes: set[Point] = field(default_factory=set)
-    path: deque[Point] = field(default_factory=deque)
+    end: Point | None = None
     score: int = 0
 
     @classmethod
     def start(cls, point: Point) -> Path:
-        return cls({point}, deque((point, )))
-
-    @property
-    def end(self) -> Point:
-        return self.path[-1]
+        return cls({point}, point)
 
     def add(self, spot: Point, grid: Grid):
         if spot in self.nodes:
             raise ValueError("Cannot visit nodes twice")
         self.nodes.add(spot)
-        self.path.append(spot)
+        self.end = spot
         self.score += grid[spot]
 
     def copy(self) -> Path:
-        return Path(self.nodes.copy(), self.path.copy(), self.score)
+        return Path(self.nodes.copy(), self.end, self.score)
 
     def draw(self, grid):
         output = ""
@@ -111,7 +107,7 @@ class Path:
         print(output)
 
     def __str__(self):
-        return f"{list(self.path)} ({self.score})"
+        return f"End: {self.end}; Len: {len(self.nodes)}; Score: {self.score}"
 
 
 def main():
