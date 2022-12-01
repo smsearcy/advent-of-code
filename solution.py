@@ -8,8 +8,8 @@ Usage: ./solution.py 1|2 FILE
 from __future__ import annotations
 
 import sys
-import typing as t
 from argparse import ArgumentParser
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 verbose = False
