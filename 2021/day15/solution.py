@@ -15,6 +15,7 @@ from datetime import datetime
 from argparse import ArgumentParser
 from collections import deque
 from dataclasses import dataclass, field
+from multiprocessing import Process, Queue, cpu_count
 from operator import attrgetter
 
 verbose = False
@@ -123,7 +124,7 @@ def main():
         verbose = True
 
     if args.part == 1:
-        part1(filename)
+        part1_parallel(filename)
     elif args.part == 2:
         part2(filename)
     else:
@@ -174,18 +175,60 @@ def part1(filename):
     print("Best score:", best_path.score)
 
 
-def part1_brute_force(filename):
-    """My original approach, in case I want to try it parallel."""
+def part1_parallel(filename):
+    """My original depth-first approach, with multiprocessing."""
 
     grid = read_file(filename)
     if verbose:
         print(grid)
         print()
 
-    paths = deque((Path.start(P(0, 0)), ))
-    best_path = None
-    print(datetime.now())
+    process_count = cpu_count()
 
+    # use a list right now because this is going to be a short list
+    paths = [Path.start(P(0, 0))]
+    print(datetime.now())
+    while len(paths) <= process_count:
+        path = paths.pop()
+        for point in grid.neighbors(path.end):
+            if point in path.nodes:
+                continue
+            new_path = path.copy()
+            new_path.add(point, grid)
+            paths.append(new_path)
+
+    print(f"Loaded {len(paths)} initial paths")
+    processes = []
+    que = Queue()
+    for path in paths:
+        p = Process(target=depth_first_subprocess, args=([path], grid, que))
+        p.start()
+        processes.append(p)
+
+    results = []
+    for _ in paths:
+        results.append(que.get())
+
+    for p in processes:
+        p.join()
+
+    best_path = sorted(results, key=attrgetter("score"))[0]
+
+    print()
+    print(datetime.now())
+    print()
+    if verbose:
+        best_path.draw(grid)
+        print()
+
+    print("Overall best process:", best_path.score)
+
+
+def depth_first_subprocess(paths: list[Path], grid: Grid, que: Queue):
+    """Find the best path from the provided paths."""
+    best_path = None
+
+    paths = deque(paths)
     count = 0
     while len(paths) > 0:
         count += 1
@@ -212,13 +255,8 @@ def part1_brute_force(filename):
                 continue
             paths.append(new_path)
 
-    print()
-    print(datetime.now())
-    print()
-    if verbose:
-        best_path.draw(grid)
-        print()
-    print("Best score:", best_path.score)
+    print("Best score for process:", best_path.score)
+    que.put(best_path)
 
 
 def part2(filename):
