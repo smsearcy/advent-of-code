@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import sys
 from argparse import ArgumentParser
-from dataclasses import dataclass, field
 from collections.abc import Iterator
+from dataclasses import dataclass, field
 
 verbose = False
 

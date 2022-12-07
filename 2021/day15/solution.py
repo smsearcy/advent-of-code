@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import sys
 import typing as t
-from datetime import datetime
 from argparse import ArgumentParser
 from collections import deque
 from dataclasses import dataclass, field
+from datetime import datetime
 from multiprocessing import Process, Queue, cpu_count
 from operator import attrgetter
 
@@ -138,7 +138,7 @@ def part1(filename):
         print(grid)
         print()
 
-    paths = deque((Path.start(P(0, 0)), ))
+    paths = deque((Path.start(P(0, 0)),))
     print(datetime.now())
 
     count = 0

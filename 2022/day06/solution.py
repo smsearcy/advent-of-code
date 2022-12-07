@@ -39,14 +39,14 @@ def main():
 
 def part1(input_data):
     for i in range(4, len(input_data) + 1, 1):
-        if len(set(input_data[i - 4:i])) < 4:
+        if len(set(input_data[i - 4 : i])) < 4:
             continue
         return i
 
 
 def part2(input_data):
     for i in range(14, len(input_data) + 1, 1):
-        if len(set(input_data[i - 14:i])) < 14:
+        if len(set(input_data[i - 14 : i])) < 14:
             continue
         return i
 
@@ -54,12 +54,12 @@ def part2(input_data):
 @pytest.mark.parametrize(
     ("data", "expected"),
     [
-        ('mjqjpqmgbljsphdztnvjfqwrcgsmlb', 7),
-        ('bvwbjplbgvbhsrlpgdmjqwftvncz', 5),
-        ('nppdvjthqldpwncqszvftbrmjlhg', 6),
-        ('nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg', 10),
-        ('zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 11),
-    ]
+        ("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7),
+        ("bvwbjplbgvbhsrlpgdmjqwftvncz", 5),
+        ("nppdvjthqldpwncqszvftbrmjlhg", 6),
+        ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10),
+        ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11),
+    ],
 )
 def test_part1(data, expected):
     assert part1(data) == expected
@@ -68,12 +68,12 @@ def test_part1(data, expected):
 @pytest.mark.parametrize(
     ("data", "expected"),
     [
-        ('mjqjpqmgbljsphdztnvjfqwrcgsmlb', 19),
-        ('bvwbjplbgvbhsrlpgdmjqwftvncz', 23),
-        ('nppdvjthqldpwncqszvftbrmjlhg', 23),
-        ('nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg', 29),
-        ('zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 26),
-    ]
+        ("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 19),
+        ("bvwbjplbgvbhsrlpgdmjqwftvncz", 23),
+        ("nppdvjthqldpwncqszvftbrmjlhg", 23),
+        ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 29),
+        ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 26),
+    ],
 )
 def test_part2(data, expected):
     assert part2(data) == expected

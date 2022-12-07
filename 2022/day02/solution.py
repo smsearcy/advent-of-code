@@ -7,9 +7,9 @@ Usage: ./solution.py 1|2 FILE
 
 from __future__ import annotations
 
+import enum
 import sys
 from argparse import ArgumentParser
-import enum
 
 verbose = False
 

@@ -24,7 +24,7 @@ class Packet:
 
     @classmethod
     def parse(cls, message: str) -> tuple[Packet, str]:
-        if message[3:6] == '100':
+        if message[3:6] == "100":
             return Value.parse(message)
         else:
             return Operator.parse(message)
@@ -41,8 +41,8 @@ class Value(Packet):
         done = False
         value_bits = ""
         while not done:
-            chunk = message[offset:offset+5]
-            if chunk[0] == '0':
+            chunk = message[offset : offset + 5]
+            if chunk[0] == "0":
                 done = True
             value_bits += chunk[1:]
             offset += 5
@@ -71,6 +71,7 @@ class Operator(Packet):
 
 def parse_bit_length_packets(message: str, length: int) -> tuple[list[Packet], str]:
     pass
+
 
 def parse_count_packets(message: str, count: int) -> list[Packet]:
     pass
@@ -113,18 +114,12 @@ def part2(filename):
 
 def read_file(filename) -> list[str]:
     with open(filename, "r") as f:
-        transmissions = [
-            line.strip()
-            for line in f
-        ]
+        transmissions = [line.strip() for line in f]
     return transmissions
 
 
 def parse_bits(message: str) -> tuple[Packet, str]:
     """Parse a Buoyancy Interchange Transmission System message."""
-
-
-
 
 
 if __name__ == "__main__":
