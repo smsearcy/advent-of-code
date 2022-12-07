@@ -11,6 +11,7 @@ import sys
 from argparse import ArgumentParser
 from collections.abc import Iterator
 from dataclasses import dataclass
+from pathlib import Path
 
 verbose = False
 
@@ -23,28 +24,29 @@ def main():
 
     global verbose
     args = parser.parse_args()
-    filename = args.filename
+    filename = Path(args.filename)
     if args.verbose:
         verbose = True
 
     if args.part == 1:
-        part1(filename)
+        print("Part 1 solution:", part1(filename))
     elif args.part == 2:
-        part2(filename)
+        print("Part 2 solution:", part2(filename))
     else:
         return f"Invalid 'part' specified: {args.part}"
 
 
-def part1(filename):
-    pass
+def part1(filename: Path):
+    return
 
 
-def part2(filename):
-    pass
+def part2(filename: Path):
+    return
 
 
-def read_file(filename):
-    with open(filename, "r") as f:
+def read_file(filename: Path):
+    data = filename.read_text()
+    for line in data.splitlines():
         pass
 
 
