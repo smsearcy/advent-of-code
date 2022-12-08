@@ -95,22 +95,19 @@ def read_file(filename) -> Directory:
     data = Path(filename).read_text()
     cwd = None
     for line in data.splitlines():
-        if line == "$ cd /":
-            cwd = root
-        elif line == "$ ls":
-            pass
-        elif line.startswith("$ cd"):
-            change_to = line.removeprefix("$ cd ")
-            if change_to == "..":
+        match line.split():
+            case ("$", "ls"):
+                pass
+            case ("$", "cd", "/"):
+                cwd = root
+            case ("$", "cd", ".."):
                 cwd = cwd.parent
-            else:
+            case ("$", "cd", change_to):
                 cwd = cwd.directories[change_to]
-        elif line.startswith("dir "):
-            dir_name = line.removeprefix("dir ")
-            cwd.directories[dir_name] = Directory(cwd)
-        else:
-            size, filename = line.split()
-            cwd.files.append(File(filename, int(size)))
+            case ("dir", dir_name):
+                cwd.directories[dir_name] = Directory(cwd)
+            case (size, filename):
+                cwd.files.append(File(filename, int(size)))
 
     return root
 
