@@ -1,4 +1,6 @@
 .idea/
+# exclude problem input/sample text files
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
