@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Template for Advent of Code solution in Python.
 
-Usage: ./solution.py 1|2 FILE
+Usage: ./solution.py FILE
 
 """
 
@@ -18,7 +18,6 @@ verbose = False
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("part", type=int)
     parser.add_argument("filename")
     parser.add_argument("--verbose", "-v", action="store_true")
 
@@ -28,12 +27,8 @@ def main():
     if args.verbose:
         verbose = True
 
-    if args.part == 1:
-        print("Part 1 solution:", part1(filename))
-    elif args.part == 2:
-        print("Part 2 solution:", part2(filename))
-    else:
-        return f"Invalid 'part' specified: {args.part}"
+    print("Part 1 solution:", part1(filename))
+    print("Part 2 solution:", part2(filename))
 
 
 def part1(filename: Path):
