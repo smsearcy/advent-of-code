@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Template for Advent of Code solution in Python.
 
-Usage: ./solution.py FILE
+Usage: ./day##.py [-v]
 
 """
 
@@ -13,6 +13,8 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
+
+import pytest
 
 verbose = False
 
@@ -104,21 +106,24 @@ class Trees:
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("filename")
     parser.add_argument("--verbose", "-v", action="store_true")
 
     global verbose
     args = parser.parse_args()
-    filename = Path(args.filename)
     if args.verbose:
         verbose = True
 
-    print("Part 1 solution:", part1(filename))
-    print("Part 2 solution:", part2(filename))
+    # the download script doesn't add the leading 0
+    day = int(Path(__file__).stem.removeprefix("day"))
+    input_file = Path(f"day{day}-input.txt")
+    print(f"Reading input from {input_file}")
+    puzzle_input = input_file.read_text()
+    print(f"Day #{day} part 1 solution:", part1(puzzle_input))
+    print(f"Day #{day} part 2 solution:", part2(puzzle_input))
 
 
-def part1(filename: Path):
-    trees = read_file(filename)
+def part1(puzzle_input: str):
+    trees = parse_input(puzzle_input)
     visible_count = 0
     for row in range(0, trees.size):
         for col in range(0, trees.size):
@@ -127,8 +132,8 @@ def part1(filename: Path):
     return visible_count
 
 
-def part2(filename: Path):
-    trees = read_file(filename)
+def part2(puzzle_input: str):
+    trees = parse_input(puzzle_input)
     scores = []
     for row in range(0, trees.size):
         for col in range(0, trees.size):
@@ -136,12 +141,38 @@ def part2(filename: Path):
     return sorted(scores)[-1]
 
 
-def read_file(filename: Path) -> Trees:
-    data = filename.read_text()
+def parse_input(puzzle_input: str) -> Trees:
     rows = []
-    for line in data.splitlines():
+    for line in puzzle_input.splitlines():
         rows.append([int(t) for t in line])
-    return Trees(rows)
+    trees = Trees(rows)
+    if verbose:
+        print(trees)
+    return trees
+
+
+SAMPLE = """
+30373
+25512
+65332
+33549
+35390
+""".lstrip(
+    "\n"
+)
+
+
+@pytest.mark.parametrize(
+    ("func", "input_", "expected"),
+    [
+        (part1, SAMPLE, 21),
+        (part2, SAMPLE, 8),
+    ],
+)
+def test_solutions(func, input_, expected):
+    global verbose
+    verbose = True
+    assert func(input_) == expected
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 .idea/
+.token
 # exclude problem input/sample text files
 *.txt
 
