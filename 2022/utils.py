@@ -26,20 +26,30 @@ class Grid:
     def column(self, column) -> list:
         return [row[column] for row in self._values]
 
+    def find(self, value) -> Point:
+        for point in self:
+            if self[point] == value:
+                return point
+
+    def find_all(self, value) -> Iterator[Point]:
+        for point in self:
+            if self[point] == value:
+                yield point
+
     def neighbors(self, point: Point, *, diagonal: bool = False) -> Iterator[Point]:
         """Yield the neighbors to a particular point."""
         for delta in (-1, 1):
-            if 0 <= point.x + delta < self._width:
+            if 0 <= point.x + delta < self.width:
                 yield Point(point.x + delta, point.y)
-            if 0 <= point.y + delta < self._height:
+            if 0 <= point.y + delta < self.height:
                 yield Point(point.x, point.y + delta)
 
         if diagonal:
             for delta_x in (-1, 1):
-                if point.x + delta_x < 0 or point.x + delta_x >= self._width:
+                if point.x + delta_x < 0 or point.x + delta_x >= self.width:
                     continue
                 for delta_y in (-1, 1):
-                    if point.y + delta_y < 0 or point.y + delta_y >= self._height:
+                    if point.y + delta_y < 0 or point.y + delta_y >= self.height:
                         continue
                     yield Point(point.x + delta_x, point.y + delta_y)
 
