@@ -11,6 +11,7 @@ import json
 import sys
 from argparse import ArgumentParser
 from collections.abc import Iterator
+from dataclasses import dataclass
 from itertools import zip_longest
 from pathlib import Path
 from typing import NamedTuple
@@ -36,6 +37,20 @@ class Packets(NamedTuple):
     def valid(self) -> bool:
         try:
             validate(self.left, self.right)
+        except ValidPacket:
+            return True
+        except InvalidPacket:
+            return False
+        return True
+
+
+@dataclass
+class Packet:
+    values: list
+
+    def __lt__(self, other: Packet):
+        try:
+            validate(self.values, other.values)
         except ValidPacket:
             return True
         except InvalidPacket:
@@ -98,7 +113,19 @@ def part1(puzzle_input: str):
 
 
 def part2(puzzle_input: str):
-    return
+    data = puzzle_input.splitlines()
+    packets = [Packet(json.loads(line)) for line in data if line]
+    if verbose:
+        print("# of packets loaded:", len(packets))
+
+    markers = [Packet([[2]]), Packet([[6]])]
+    packets += markers
+
+    packets = sorted(packets)
+    first_packet_index = packets.index(markers[0]) + 1
+    second_packet_index = packets.index(markers[1]) + 1
+
+    return first_packet_index * second_packet_index
 
 
 def parse_input(puzzle_input: str) -> Iterator[Packets]:
