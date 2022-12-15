@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Iterator
 from dataclasses import dataclass
 
@@ -6,6 +8,33 @@ from dataclasses import dataclass
 class Point:
     x: int
     y: int
+
+    @classmethod
+    def load(cls, value: str) -> Point:
+        return Point(*(int(c) for c in value.split(",")))
+
+    @classmethod
+    def line(cls, begin: Point, end: Point) -> list[Point]:
+        """Create the list of points that make up a line.
+
+        Only cardinal directions are currently supported!
+
+        """
+        if begin == end:
+            return [begin]
+        if begin.y == end.y:
+            if begin.x < end.x:
+                delta = 1
+            else:
+                delta = -1
+            return [Point(x, begin.y) for x in range(begin.x, end.x + delta, delta)]
+        if begin.x == end.x:
+            if begin.y < end.y:
+                delta = 1
+            else:
+                delta = -1
+            return [Point(begin.x, y) for y in range(begin.y, end.y + delta, delta)]
+        return ValueError("Line must be horizontal or vertical.")
 
 
 @dataclass
