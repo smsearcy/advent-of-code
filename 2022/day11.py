@@ -7,6 +7,7 @@ Usage: ./day##.py [--verbose]
 
 from __future__ import annotations
 
+import math
 import re
 import sys
 from argparse import ArgumentParser
@@ -75,12 +76,14 @@ def part1(puzzle_input: str):
 def part2(puzzle_input: str):
     monkeys = parse_input(puzzle_input)
 
+    worry_manager = math.prod(monkey.divide_by for monkey in monkeys.values())
+
     for _ in range(10000):
         for monkey in monkeys.values():
             while monkey.items:
                 monkey.item_count += 1
                 item = monkey.items.popleft()
-                item = monkey.operation(item)
+                item = monkey.operation(item) % worry_manager
                 if item % monkey.divide_by == 0:
                     monkeys[monkey.true_monkey].items.append(item)
                 else:
